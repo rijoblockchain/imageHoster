@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import javax.servlet.http.HttpSession;
@@ -41,9 +43,18 @@ public class UserController {
     //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
-        userService.registerUser(user);
-        return "redirect:/users/login";
+    public String registerUser(User user, Model model) {
+        /*userService.registerUser(user);
+        return "redirect:/users/login";*/
+        if(isPasswordPatternMatch(user.getPassword())) {
+            userService.registerUser(user);
+            return "users/login";
+        } else {
+            String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
+            model.addAttribute("User", user);
+            model.addAttribute("passwordTypeError", error);
+            return "users/registration";
+        }
 
     }
 
@@ -81,5 +92,11 @@ public class UserController {
         model.addAttribute("images", images);
         return "index";
     }
-    
+
+    private Boolean isPasswordPatternMatch(String password){
+        Pattern pattern= Pattern.compile("(?=.*[a-z])(?=.*[0-9])(?=.*[^a-z0-9])", Pattern.CASE_INSENSITIVE);
+        Matcher match = pattern.matcher(password);
+        return match.find();
+    }
+
 }
