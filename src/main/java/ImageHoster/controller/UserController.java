@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class UserController {
     public String registerUser(User user) {
         userService.registerUser(user);
         return "redirect:/users/login";
+
     }
 
     //This controller method is called when the request pattern is of type 'users/login'
@@ -79,4 +81,5 @@ public class UserController {
         model.addAttribute("images", images);
         return "index";
     }
+    
 }
